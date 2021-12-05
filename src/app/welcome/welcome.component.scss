@@ -1,0 +1,17 @@
+
+@import '../../colors.scss';
+.welcome{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family:"CircularSpotifyTxT Medium Web", sans-serif;
+
+    img{
+        border-radius: 15rem;
+        border:0.3rem solid $spotify-green;
+        max-width: 20%;
+        max-height: auto;
+    }
+}
