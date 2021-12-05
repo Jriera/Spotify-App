@@ -3,15 +3,17 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CallbackComponent } from './callback/callback.component';
-import {HttpClientModule} from '@angular/common/http';
 import { WelcomeComponent } from './welcome/welcome.component';
+import {HttpClientModule} from '@angular/common/http';
+import { LoginComponent } from './login/login.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    CallbackComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    LoginComponent,
+    
   ],
   imports: [
     BrowserModule,
