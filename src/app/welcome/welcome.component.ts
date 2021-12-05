@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpService } from '../services/http.service';
+import { SpotifyService } from '../services/spotify.service';
+import { SpotifyUser } from '../spotify-user';
+import {TokenResponse} from '../token-response';
+import {finalize, map, pluck} from 'rxjs/operators';
 
 @Component({
   selector: 'app-welcome',
@@ -8,11 +12,81 @@ import { HttpService } from '../services/http.service';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
-  code:string|null = '';
-  constructor() { }
+  code:string= '';
+  TokenResponse:TokenResponse|null = null;
+  accessToken:string='';
+  user:SpotifyUser={
+    country: '',
+    display_name: '',
+    email: '',
+    explicit_content: {
+      filter_enabled: false,
+      filter_locked: false
+    },
+    external_urls: {
+      spotify: ''
+    },
+    followers: {
+      href: '',
+      total: 0
+    },
+    href: '',
+    id: '',
+    images: [
+      {
+        height: 0,
+        url: '',
+        width: 0
+      }
+    ],
+    type: '',
+    uri: ''
+  };
+  constructor(private aRoute:ActivatedRoute,private http:HttpService,private spotify:SpotifyService) { }
 
   ngOnInit(): void {
-  }
+    this.getCode();
+    this.http.getToken(this.code).pipe(
+      pluck('access_token'),
+      map(data=>{
+        this.spotify.token= data;
+      }),
+      finalize(()=>{
+        console.log('get token finalized');
+        this.getUser();
+        this.getRecent();
+      })).subscribe(data=>{
+        console.log(data);
+      });
+    }
+    
+   
+    
+
+  getCode() {
+    this.aRoute.queryParams.subscribe(params => {
+      this.code = params['code'];});
+      console.log(this.code);
+      return this.code;
+    }
+
+    getUser(){
+      this.spotify.getProfile().subscribe(data => {
+        console.log(data);
+        this.user = data;
+        return data;
+      });
+    }
+  
+    getRecent(){
+      this.spotify.getRecentTracks().subscribe(data => console.log(data));
+    }
+  
+    
+
+
+
   
 
+   
 }
