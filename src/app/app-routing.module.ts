@@ -1,12 +1,14 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CallbackComponent } from './callback/callback.component';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { LoginComponent } from './login/login.component';
+
 
 const routes: Routes = [
-  {path: 'callback', component: CallbackComponent},
-  {path:'welcome', component: WelcomeComponent},
-  {path: '', component: CallbackComponent},
+  {path: 'welcome', component: WelcomeComponent},
+  {path:'login', component: LoginComponent},
+  {path: '', component: WelcomeComponent},
+  
 ];
 
 @NgModule({
