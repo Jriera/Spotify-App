@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'colors.scss';
+@import 'fonts.scss';
+
+body,html{
+    background-color: $dark;
+    font-family:"CircularSpotifyTxT Medium Web" ;
+}
