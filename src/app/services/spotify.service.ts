@@ -25,7 +25,6 @@ export class SpotifyService {
        'Authorization': `Bearer ${this.token}`,
        
     });
-    console.log(this.token);
     return this.httpSpotify.get(`https://api.spotify.com/v1/me/player/recently-played`,{headers})
   }
 
