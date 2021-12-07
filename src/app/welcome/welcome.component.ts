@@ -3,32 +3,36 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpService } from '../services/http.service';
 import { SpotifyService } from '../services/spotify.service';
 import { SpotifyUser } from '../spotify-user';
-import {TokenResponse} from '../token-response';
-import {finalize, map, pluck} from 'rxjs/operators';
+import { TokenResponse } from '../token-response';
+import { finalize, map, pluck } from 'rxjs/operators';
+import * as CryptoJS from 'crypto-js';
+
 
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.scss']
+  styleUrls: ['./welcome.component.scss'],
 })
 export class WelcomeComponent implements OnInit {
-  code:string= '';
-  TokenResponse:TokenResponse|null = null;
-  accessToken:string='';
-  user:SpotifyUser={
+  code: string = '';
+  TokenResponse: TokenResponse | null = null;
+  logged: string | null= 'false';
+
+  accessToken: string = '';
+  user: SpotifyUser = {
     country: '',
     display_name: '',
     email: '',
     explicit_content: {
       filter_enabled: false,
-      filter_locked: false
+      filter_locked: false,
     },
     external_urls: {
-      spotify: ''
+      spotify: '',
     },
     followers: {
       href: '',
-      total: 0
+      total: 0,
     },
     href: '',
     id: '',
@@ -36,57 +40,79 @@ export class WelcomeComponent implements OnInit {
       {
         height: 0,
         url: '',
-        width: 0
-      }
+        width: 0,
+      },
     ],
     type: '',
-    uri: ''
+    uri: '',
   };
-  constructor(private aRoute:ActivatedRoute,private http:HttpService,private spotify:SpotifyService) { }
+  constructor(
+    private aRoute: ActivatedRoute,
+    private http: HttpService,
+    private spotify: SpotifyService
+  ) {}
 
   ngOnInit(): void {
     this.getCode();
-    this.http.getToken(this.code).pipe(
-      pluck('access_token'),
-      map(data=>{
-        this.spotify.token= data;
-      }),
-      finalize(()=>{
-        console.log('get token finalized');
-        this.getUser();
-        this.getRecent();
-      })).subscribe(data=>{
+    this.getToken();
+  }
+
+  getToken() {
+    this.logged = localStorage.getItem('isLogged');
+    if(this.logged === 'false' || this.logged === null) {
+    this.http
+      .getToken(this.code)
+      .pipe(
+        pluck('access_token'),
+        map((data) => {
+          localStorage.setItem('token', data);
+          localStorage.setItem('isLogged', 'true');
+          console.log(data);
+          console.log('get token finalized');
+          /* this.spotify.token= data; */
+        }),
+        finalize(() => {
+          this.encrypt();
+          this.getUser();
+          this.getRecent();
+        })
+      )
+      .subscribe((data) => {
         console.log(data);
       });
+    } else{
+      this.getUser();
+      this.getRecent();
     }
-    
-   
-    
+  }
 
   getCode() {
-    this.aRoute.queryParams.subscribe(params => {
-      this.code = params['code'];});
-      console.log(this.code);
-      return this.code;
+    this.aRoute.queryParams.subscribe((params) => {
+      this.code = params['code'];
+    });
+    return this.code;
+  }
+
+  getUser() {
+    this.spotify.getProfile().subscribe((data) => {
+      console.log(data);
+      this.user = data;
+      return data;
+    });
+  }
+
+  getRecent() {
+    this.spotify.getRecentTracks().subscribe((data) => console.log(data));
+  }
+
+  encrypt() {
+    const text = localStorage.getItem('token');
+    this.logged = localStorage.getItem('isLogged');
+    if (text != null && this.logged=== 'false') {
+      const encrypted = CryptoJS.AES.encrypt(text, 'secret key 123').toString();
+      localStorage.removeItem('token');
+      localStorage.setItem('token', encrypted);
+      localStorage.setItem('isLogged', 'true');
     }
-
-    getUser(){
-      this.spotify.getProfile().subscribe(data => {
-        console.log(data);
-        this.user = data;
-        return data;
-      });
-    }
-  
-    getRecent(){
-      this.spotify.getRecentTracks().subscribe(data => console.log(data));
-    }
-  
-    
-
-
-
-  
-
-   
+  }
 }
