@@ -5,6 +5,8 @@ import { SpotifyService } from '../services/spotify.service';
 import { SpotifyUser } from '../spotify-user';
 import {TokenResponse} from '../token-response';
 import {finalize, map, pluck} from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-welcome',
@@ -42,19 +44,27 @@ export class WelcomeComponent implements OnInit {
     type: '',
     uri: ''
   };
-  constructor(private aRoute:ActivatedRoute,private http:HttpService,private spotify:SpotifyService) { }
+  constructor(private aRoute:ActivatedRoute,
+              private http:HttpService,
+              private spotify:SpotifyService,
+              private cookieService:CookieService) { }
 
   ngOnInit(): void {
     this.getCode();
     this.http.getToken(this.code).pipe(
-      pluck('access_token'),
       map(data=>{
-        this.spotify.token= data;
+        /* this.spotify.token= data.access_token; */
+        this.encode(data.access_token);
+        
+        const refreshToken = data.refresh_token;
+        this.cookieService.set('refreshToken', refreshToken);
       }),
       finalize(()=>{
         console.log('get token finalized');
         this.getUser();
         this.getRecent();
+        this.getfreshToken(this.cookieService.get('refreshToken'));
+        
       })).subscribe(data=>{
         console.log(data);
       });
@@ -66,7 +76,6 @@ export class WelcomeComponent implements OnInit {
   getCode() {
     this.aRoute.queryParams.subscribe(params => {
       this.code = params['code'];});
-      console.log(this.code);
       return this.code;
     }
 
@@ -80,6 +89,21 @@ export class WelcomeComponent implements OnInit {
   
     getRecent(){
       this.spotify.getRecentTracks().subscribe(data => console.log(data));
+    }
+
+    getfreshToken(cookie:string){
+      this.http.getRefreshToken(cookie).subscribe(data=>{
+        this.spotify.token= data.access_token;
+        const refreshToken = data.refresh_token;
+        this.cookieService.set('refreshToken', refreshToken);
+        console.log(data);
+        
+      });
+    }
+
+    encode(value:string){
+      const coded= CryptoJS.AES.encrypt(value, 'secret key 123').toString();
+      this.cookieService.set('token', coded);
     }
   
     
