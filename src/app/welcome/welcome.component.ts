@@ -6,6 +6,7 @@ import { SpotifyUser } from '../spotify-user';
 import {TokenResponse} from '../token-response';
 import {finalize, map, pluck} from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-welcome',
@@ -52,7 +53,9 @@ export class WelcomeComponent implements OnInit {
     this.getCode();
     this.http.getToken(this.code).pipe(
       map(data=>{
-        this.spotify.token= data.access_token;
+        /* this.spotify.token= data.access_token; */
+        this.encode(data.access_token);
+        
         const refreshToken = data.refresh_token;
         this.cookieService.set('refreshToken', refreshToken);
       }),
@@ -96,6 +99,11 @@ export class WelcomeComponent implements OnInit {
         console.log(data);
         
       });
+    }
+
+    encode(value:string){
+      const coded= CryptoJS.AES.encrypt(value, 'secret key 123').toString();
+      this.cookieService.set('token', coded);
     }
   
     
