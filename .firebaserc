@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "spotify-mgr": {
+      "hosting": {
+        "mySpotify": [
+          "spotify-mgr"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "spotify-mgr"
+  }
+}
