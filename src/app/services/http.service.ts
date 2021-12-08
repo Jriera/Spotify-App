@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
-import { TokenResponse } from '../token-response';
+import { TokenResponse } from '../responses.interfaces';
 import { CookieService } from 'ngx-cookie-service';
 import { SpotifyService } from './spotify.service';
 
