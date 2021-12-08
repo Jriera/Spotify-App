@@ -105,6 +105,16 @@
               "node_modules/crypto-js/crypto-js.js"
             ]
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "mySpotify:build:production",
+            "firebaseProject": "spotify-mgr",
+            "firebaseHostingSite": "spotify-mgr"
+          }
         }
       }
     }
