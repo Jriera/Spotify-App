@@ -1,0 +1,26 @@
+@import '../../../node_modules/font-awesome/css/font-awesome.css';
+@import '../../../node_modules/@fortawesome/fontawesome-free/css/all.css';
+:host{
+    background-color: #000;
+    width: 20%;
+    min-height: 100vh;
+    float: left;
+    box-shadow: 2px 0 10px rgba(0,0,0,.2);
+}
+
+.fa-2x{
+    font-size: 1.5rem;
+}
+
+a{
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom:1rem ;
+    
+    span{
+        margin-left: 1rem;
+    }
+}
