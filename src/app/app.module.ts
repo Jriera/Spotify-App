@@ -7,6 +7,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import {HttpClientModule} from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { CookieService } from 'ngx-cookie-service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 
 
@@ -15,6 +16,7 @@ import { CookieService } from 'ngx-cookie-service';
     AppComponent,
     WelcomeComponent,
     LoginComponent,
+    SidebarComponent,
     
   ],
   imports: [
