@@ -18,7 +18,7 @@ accessToken= this.spotifyService.token;
   getBasicToken() {
     let clientId = environment.clientId; // Your client id
     let clientSecret = environment.clientSecret; // Your secret
-    const redirect_uri = 'https://spotify-mgr.web.app/welcome'; // Your redirect uri
+    const redirect_uri = 'http://localhost:4200/welcome'; // Your redirect uri
     let apiURL = 'https://accounts.spotify.com/api/token';
 
     const encodedClient = btoa(`${clientId}:${clientSecret}`);
@@ -36,7 +36,7 @@ accessToken= this.spotifyService.token;
   getToken(code: string) {
     let clientId = environment.clientId; // Your client id
     let clientSecret = environment.clientSecret; // Your secret
-    const redirect_uri = 'https://spotify-mgr.web.app/welcome'; // Your redirect uri
+    const redirect_uri = 'http://localhost:4200/welcome'; // Your redirect uri
     let apiURL = environment.tokenUrl;
 
     const encodedClient = btoa(`${clientId}:${clientSecret}`);
